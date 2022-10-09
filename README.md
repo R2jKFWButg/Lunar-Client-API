@@ -1,5 +1,5 @@
 # Lunar Client API
-Lunar Client's API rewritten as a java library. This is a partially recoded version of [PringlePot/LCWebsocket](https://github.com/PringlePot/LCWebsocket).\
+Lunar Client's WebSocket rewritten as a java library. This is a partially recoded version of [PringlePot/LCWebsocket](https://github.com/PringlePot/LCWebsocket).\
 Allows for multiple connections at the same time (on different accounts).\
 Easily integrates into a forge mod or minecraft client to spoof client type.
 
