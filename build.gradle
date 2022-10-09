@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+group 'me.ghaph'
+version '0.0.1'
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://libraries.minecraft.net/'
+    }
+}
+
+dependencies {
+    implementation 'com.google.guava:guava:31.1-jre'
+    implementation 'io.netty:netty-all:4.1.77.Final'
+    implementation 'org.java-websocket:Java-WebSocket:1.5.3'
+    implementation 'org.json:json:20220320'
+    implementation 'com.mojang:authlib:1.5.21'
+}
