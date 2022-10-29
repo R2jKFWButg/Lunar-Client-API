@@ -32,6 +32,9 @@ public class LunarSession {
         if (sessionId.contains(":")) {
             sessionId = sessionId.split(":")[1];
         }
+        if (!uuid.contains("-")) {
+            uuid = uuid.replaceFirst("(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)", "$1-$2-$3-$4-$5");
+        }
 
         this.sessionId = sessionId;
         this.uuid = uuid;
@@ -84,7 +87,6 @@ public class LunarSession {
             storage.put("uuid", getUUID());
 
             auth.loadFromStorage(storage);
-            System.out.println(auth.getAuthenticatedToken());
         } else {
             auth.setUsername(getEmail());
             auth.setPassword(getPassword());

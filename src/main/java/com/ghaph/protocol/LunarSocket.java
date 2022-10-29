@@ -105,12 +105,12 @@ public class LunarSocket extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        System.out.println("Closed: " + reason);
-        this.getClient().disconnect();
-
-        TimeUtils.sleep(1500);
-
-        closeCallback.accept(null);
+        System.out.println("Closed: " + reason + " (" + code + ")");
+        if (!this.isOpen()) {
+            this.getClient().disconnect();
+            TimeUtils.sleep(1500);
+            closeCallback.accept(null);
+        }
     }
 
     @Override

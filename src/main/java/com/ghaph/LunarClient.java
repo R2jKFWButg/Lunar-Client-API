@@ -28,6 +28,7 @@ public class LunarClient {
     private long lastAuthenticated;
     private LunarSocket lunarSocket;
     private boolean connected = false;
+    private boolean connecting = false;
 
     private String server = "";
 
@@ -55,7 +56,7 @@ public class LunarClient {
         headers.put("branch", "master");
         headers.put("clothCloak", "false");
         headers.put("gitCommit", "4d6392e7d63b4b883ba28f4cb7ca06387a221fe2");
-        headers.put("hatHeightOffset", "");
+        headers.put("hatHeightOffset", "[{\"id\":2424,\"height\":0.0},{\"id\":2490,\"height\":0.0},{\"id\":2491,\"height\":0.0},{\"id\":2492,\"height\":0.0},{\"id\":2493,\"height\":0.0},{\"id\":2494,\"height\":0.0}]");
         headers.put("hwid", "not supplied");
         headers.put("launcherVersion", "not supplied");
         headers.put("lunarPlusColor", "-1");
@@ -69,7 +70,10 @@ public class LunarClient {
         headers.put("version", this.session.getVersion().code);
 
         try {
-            this.lunarSocket = new LunarSocket(headers, lunarSettings.getWebsocketUrl(), this, (__) -> connected = true, (__) -> {
+            this.lunarSocket = new LunarSocket(headers, lunarSettings.getWebsocketUrl(), this, (__) -> {
+                connected = true;
+                connecting = false;
+            }, (__) -> {
                 // the tokens expire after 5 minutes, so we need to reauthenticate
                 if (System.currentTimeMillis() - lastAuthenticated < 300000) {
                     connectToWebsocket();
@@ -85,9 +89,10 @@ public class LunarClient {
     }
 
     public void connect() {
-        if (connected) {
+        if (connected || connecting) {
             return;
         }
+        connecting = true;
 
         // needs to attempt to update the username and uuid if only email and password are given to LunarSession
         try {
@@ -115,9 +120,18 @@ public class LunarClient {
 
     public void disconnect() {
         connected = false;
+        connecting = false;
         if (this.lunarSocket != null) {
             this.lunarSocket.close();
         }
+    }
+
+    public boolean isConnecting() {
+        return connecting;
+    }
+
+    public boolean isConnected() {
+        return connected;
     }
 
     public LunarSocket getSocket() {
@@ -192,6 +206,10 @@ public class LunarClient {
     }
 
     public void setServer(String server) {
+        if (!connected) {
+            return;
+        }
+
         if (numericIp.matcher(server).find()) {
             server = "_numeric_";
         }
